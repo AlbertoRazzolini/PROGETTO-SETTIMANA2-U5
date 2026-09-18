@@ -34,6 +34,11 @@ public class ChatController {
 		return chatService.apri(autenticazione.getName(), richiesta);
 	}
 
+	@GetMapping
+	public List<ChatResponse> lista(Authentication autenticazione) {
+		return chatService.listaChat(autenticazione.getName());
+	}
+
 	@GetMapping("/{chatId}/messages")
 	public List<MessageResponse> messaggi(Authentication autenticazione, @PathVariable UUID chatId) {
 		return messageService.cronologia(autenticazione.getName(), chatId);

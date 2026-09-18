@@ -7,6 +7,7 @@ import com.example.be.entities.User;
 import com.example.be.exception.RisorsaNonTrovataException;
 import com.example.be.repository.ChatRepository;
 import com.example.be.repository.UserRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,5 +36,14 @@ public class ChatService {
 				.orElseGet(() -> chats.save(new Chat(me, altro)));
 
 		return ChatResponse.di(chat);
+	}
+
+	public List<ChatResponse> listaChat(String usernameLoggato) {
+		User me = utenti.findByUsername(usernameLoggato)
+				.orElseThrow(() -> new RisorsaNonTrovataException("utente loggato non trovato"));
+
+		return chats.findByUtente1_IdOrUtente2_Id(me.getId(), me.getId()).stream()
+				.map(ChatResponse::di)
+				.toList();
 	}
 }
