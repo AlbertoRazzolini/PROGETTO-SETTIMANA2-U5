@@ -10,6 +10,7 @@ import com.example.be.exception.RisorsaNonTrovataException;
 import com.example.be.repository.ChatRepository;
 import com.example.be.repository.MessageRepository;
 import com.example.be.repository.UserRepository;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -61,6 +62,24 @@ public class MessageService {
 		Chat chat = chatConAccesso(utente, chatId);
 
 		return messaggi.findByChatIdOrderByInviatoIlAsc(chat.getId()).stream()
+				.map(MessageResponse::di)
+				.toList();
+	}
+
+	public List<MessageResponse> segnaComeLetti(String username, UUID chatId) {
+		User utente = utenti.findByUsername(username)
+				.orElseThrow(() -> new RisorsaNonTrovataException("utente non trovato: " + username));
+
+		Chat chat = chatConAccesso(utente, chatId);
+
+		List<Message> nonLetti = messaggi.findByChatIdAndMittenteIdNotAndLettoFalse(chat.getId(), utente.getId());
+		Instant ora = Instant.now();
+		nonLetti.forEach(messaggio -> {
+			messaggio.setLetto(true);
+			messaggio.setLettoIl(ora);
+		});
+
+		return messaggi.saveAll(nonLetti).stream()
 				.map(MessageResponse::di)
 				.toList();
 	}

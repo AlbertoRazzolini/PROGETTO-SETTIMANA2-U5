@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MessageRepository extends JpaRepository<Message, UUID> {
 
 	List<Message> findByChatIdOrderByInviatoIlAsc(UUID chatId);
+
+	List<Message> findByChatIdAndMittenteIdNotAndLettoFalse(UUID chatId, UUID mittenteId);
 }

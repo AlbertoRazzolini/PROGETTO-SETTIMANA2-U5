@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,5 +37,10 @@ public class ChatController {
 	@GetMapping("/{chatId}/messages")
 	public List<MessageResponse> messaggi(Authentication autenticazione, @PathVariable UUID chatId) {
 		return messageService.cronologia(autenticazione.getName(), chatId);
+	}
+
+	@PatchMapping("/{chatId}/messages/read")
+	public List<MessageResponse> segnaComeLetti(Authentication autenticazione, @PathVariable UUID chatId) {
+		return messageService.segnaComeLetti(autenticazione.getName(), chatId);
 	}
 }
