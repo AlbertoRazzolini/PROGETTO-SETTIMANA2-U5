@@ -1,5 +1,6 @@
 package com.example.be.web;
 
+import com.example.be.exception.AccessoNegatoException;
 import com.example.be.exception.DatoGiaRegistratoException;
 import com.example.be.exception.RisorsaNonTrovataException;
 import java.util.List;
@@ -44,5 +45,11 @@ public class ApiExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiError handleIllegalArgument(IllegalArgumentException ex) {
 		return ApiError.badRequest(List.of(ex.getMessage()));
+	}
+
+	@ExceptionHandler(AccessoNegatoException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ApiError handleAccessoNegato(AccessoNegatoException ex) {
+		return ApiError.forbidden(List.of(ex.getMessage()));
 	}
 }
