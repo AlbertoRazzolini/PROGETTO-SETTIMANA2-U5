@@ -16,4 +16,8 @@ public record ApiError(Instant timestamp, int status, String error, List<String>
 	public static ApiError unauthorized(List<String> messages) {
 		return new ApiError(Instant.now(), 401, "Unauthorized", messages);
 	}
+
+	public static ApiError notFound(List<String> messages) {
+		return new ApiError(Instant.now(), 404, "Not Found", messages);
+	}
 }

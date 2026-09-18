@@ -1,6 +1,7 @@
 package com.example.be.web;
 
 import com.example.be.exception.DatoGiaRegistratoException;
+import com.example.be.exception.RisorsaNonTrovataException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,5 +32,17 @@ public class ApiExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public ApiError handleCredenzialiErrate(BadCredentialsException ex) {
 		return ApiError.unauthorized(List.of("credenziali non valide"));
+	}
+
+	@ExceptionHandler(RisorsaNonTrovataException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiError handleRisorsaNonTrovata(RisorsaNonTrovataException ex) {
+		return ApiError.notFound(List.of(ex.getMessage()));
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiError handleIllegalArgument(IllegalArgumentException ex) {
+		return ApiError.badRequest(List.of(ex.getMessage()));
 	}
 }
