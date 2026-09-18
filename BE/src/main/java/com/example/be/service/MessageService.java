@@ -10,6 +10,8 @@ import com.example.be.exception.RisorsaNonTrovataException;
 import com.example.be.repository.ChatRepository;
 import com.example.be.repository.MessageRepository;
 import com.example.be.repository.UserRepository;
+import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -41,14 +43,7 @@ public class MessageService {
 		User mittente = utenti.findByUsername(usernameMittente)
 				.orElseThrow(() -> new RisorsaNonTrovataException("utente non trovato: " + usernameMittente));
 
-		Chat chat = chats.findById(richiesta.chatId())
-				.orElseThrow(() -> new RisorsaNonTrovataException("chat non trovata: " + richiesta.chatId()));
-
-		boolean partecipante = chat.getUtente1().getId().equals(mittente.getId())
-				|| chat.getUtente2().getId().equals(mittente.getId());
-		if (!partecipante) {
-			throw new AccessoNegatoException("non fai parte di questa chat");
-		}
+		Chat chat = chatConAccesso(mittente, richiesta.chatId());
 
 		Message salvato = messaggi.save(new Message(chat, mittente, richiesta.contenuto()));
 
@@ -57,5 +52,30 @@ public class MessageService {
 
 		log.info("messaggio {} in chat {} da {}", salvato.getId(), chat.getId(), usernameMittente);
 		return risposta;
+	}
+
+	public List<MessageResponse> cronologia(String username, UUID chatId) {
+		User utente = utenti.findByUsername(username)
+				.orElseThrow(() -> new RisorsaNonTrovataException("utente non trovato: " + username));
+
+		Chat chat = chatConAccesso(utente, chatId);
+
+		return messaggi.findByChatIdOrderByInviatoIlAsc(chat.getId()).stream()
+				.map(MessageResponse::di)
+				.toList();
+	}
+
+	/* Recupera la chat e verifica che l'utente ne faccia parte, altrimenti nega l'accesso. */
+	private Chat chatConAccesso(User utente, UUID chatId) {
+		Chat chat = chats.findById(chatId)
+				.orElseThrow(() -> new RisorsaNonTrovataException("chat non trovata: " + chatId));
+
+		boolean partecipante = chat.getUtente1().getId().equals(utente.getId())
+				|| chat.getUtente2().getId().equals(utente.getId());
+		if (!partecipante) {
+			throw new AccessoNegatoException("non fai parte di questa chat");
+		}
+
+		return chat;
 	}
 }
