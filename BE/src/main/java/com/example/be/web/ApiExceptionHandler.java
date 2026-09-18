@@ -2,6 +2,7 @@ package com.example.be.web;
 
 import com.example.be.exception.AccessoNegatoException;
 import com.example.be.exception.DatoGiaRegistratoException;
+import com.example.be.exception.EmailNonInviataException;
 import com.example.be.exception.RisorsaNonTrovataException;
 import com.example.be.exception.ServizioIaNonDisponibileException;
 import java.util.List;
@@ -57,6 +58,12 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(ServizioIaNonDisponibileException.class)
 	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
 	public ApiError handleServizioIaNonDisponibile(ServizioIaNonDisponibileException ex) {
+		return ApiError.serviceUnavailable(List.of(ex.getMessage()));
+	}
+
+	@ExceptionHandler(EmailNonInviataException.class)
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public ApiError handleEmailNonInviata(EmailNonInviataException ex) {
 		return ApiError.serviceUnavailable(List.of(ex.getMessage()));
 	}
 }

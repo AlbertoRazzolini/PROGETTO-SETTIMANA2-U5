@@ -18,4 +18,6 @@ public interface ChatRepository extends JpaRepository<Chat, UUID> {
 	Optional<Chat> trovaTraUtenti(@Param("utenteA") UUID utenteA, @Param("utenteB") UUID utenteB);
 
 	List<Chat> findByUtente1_IdOrUtente2_Id(UUID utente1Id, UUID utente2Id);
+
+	long countByUtente1_IdOrUtente2_Id(UUID utente1Id, UUID utente2Id);
 }
