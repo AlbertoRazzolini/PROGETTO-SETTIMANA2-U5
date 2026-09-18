@@ -43,6 +43,11 @@ public class Message {
 	@Column(nullable = false, updatable = false)
 	private Instant inviatoIl = Instant.now();
 
+	@Column(nullable = false)
+	private boolean letto = false;
+
+	private Instant lettoIl;
+
 	public Message(Chat chat, User mittente, String contenuto) {
 		this.chat = chat;
 		this.mittente = mittente;
