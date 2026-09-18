@@ -3,6 +3,8 @@ package com.example.be.web;
 import com.example.be.dto.ChatResponse;
 import com.example.be.dto.CreateChatRequest;
 import com.example.be.dto.MessageResponse;
+import com.example.be.dto.SuggestionResponse;
+import com.example.be.service.AiSuggestionService;
 import com.example.be.service.ChatService;
 import com.example.be.service.MessageService;
 import java.util.List;
@@ -23,10 +25,13 @@ public class ChatController {
 
 	private final ChatService chatService;
 	private final MessageService messageService;
+	private final AiSuggestionService aiSuggestionService;
 
-	public ChatController(ChatService chatService, MessageService messageService) {
+	public ChatController(ChatService chatService, MessageService messageService,
+			AiSuggestionService aiSuggestionService) {
 		this.chatService = chatService;
 		this.messageService = messageService;
+		this.aiSuggestionService = aiSuggestionService;
 	}
 
 	@PostMapping
@@ -47,5 +52,10 @@ public class ChatController {
 	@PatchMapping("/{chatId}/messages/read")
 	public List<MessageResponse> segnaComeLetti(Authentication autenticazione, @PathVariable UUID chatId) {
 		return messageService.segnaComeLetti(autenticazione.getName(), chatId);
+	}
+
+	@PostMapping("/{chatId}/suggest")
+	public SuggestionResponse suggerisci(Authentication autenticazione, @PathVariable UUID chatId) {
+		return aiSuggestionService.suggerisci(autenticazione.getName(), chatId);
 	}
 }

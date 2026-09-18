@@ -3,6 +3,7 @@ package com.example.be.web;
 import com.example.be.exception.AccessoNegatoException;
 import com.example.be.exception.DatoGiaRegistratoException;
 import com.example.be.exception.RisorsaNonTrovataException;
+import com.example.be.exception.ServizioIaNonDisponibileException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -51,5 +52,11 @@ public class ApiExceptionHandler {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public ApiError handleAccessoNegato(AccessoNegatoException ex) {
 		return ApiError.forbidden(List.of(ex.getMessage()));
+	}
+
+	@ExceptionHandler(ServizioIaNonDisponibileException.class)
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public ApiError handleServizioIaNonDisponibile(ServizioIaNonDisponibileException ex) {
+		return ApiError.serviceUnavailable(List.of(ex.getMessage()));
 	}
 }

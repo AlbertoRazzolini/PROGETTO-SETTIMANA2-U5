@@ -24,4 +24,8 @@ public record ApiError(Instant timestamp, int status, String error, List<String>
 	public static ApiError forbidden(List<String> messages) {
 		return new ApiError(Instant.now(), 403, "Forbidden", messages);
 	}
+
+	public static ApiError serviceUnavailable(List<String> messages) {
+		return new ApiError(Instant.now(), 503, "Service Unavailable", messages);
+	}
 }
